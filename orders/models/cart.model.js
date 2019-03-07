@@ -14,6 +14,13 @@ module.exports = {
       type: Sequelize.STRING(32),
       allowNull: false,
     },
+    email: {
+      type: Sequelize.STRING(100),
+      allowNull: false,
+      validate: {
+        isEmail: true,
+      },
+    },
     product_id: {
       type: Sequelize.INTEGER,
       allowNull: false,

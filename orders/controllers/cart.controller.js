@@ -6,7 +6,6 @@ module.exports = {
     if (req) {
       try {
         const cartItem = req.body;
-        cartItem.added_on = new Date();
         await crudUtil.create(cartModel.Shopping_Cart, cartItem);
         res.status(201);
         res.send('Created');
