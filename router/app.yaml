@@ -1,0 +1,4 @@
+runtime: nodejs8
+
+beta_settings:
+  cloud_sql_instances: shopmate-microapi:us-west1:shopmate

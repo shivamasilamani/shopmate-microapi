@@ -1,0 +1,5 @@
+dispatch:
+  - url: '*/products/*'
+    service: products
+  - url: '*/orders/*'
+    service: orders
