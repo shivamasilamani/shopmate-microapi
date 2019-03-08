@@ -13,7 +13,9 @@ require('./config/passport.config')(passport);
 const app = new Express();
 
 // Login to database and establish connection
-dbConfig.login();
+if (process.env.NODE_ENV !== 'test') {
+  dbConfig.login();
+}
 
 // Initialize passport
 app.use(passport.initialize());

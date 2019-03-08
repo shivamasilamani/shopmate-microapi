@@ -5,7 +5,7 @@ const dbConfig = require('../config/db.config');
 const sequelizeInstance = dbConfig.dbInstance;
 
 const User = sequelizeInstance.define('seq_users', {
-  customer_id: {
+  user_id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
     autoIncrement: true,

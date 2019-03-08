@@ -7,12 +7,12 @@ route.get('/', (req, res) => {
   cartController.getItemsInCart(req, res);
 });
 
-route.get('/:id', (req, res) => {
-  cartController.getItemDetailInCart(req, res);
+route.post('/', (req, res) => {
+  cartController.addItemToCart(req, res);
 });
 
-route.post('/', (req, res) => {
-  cartController.addProductToCart(req, res);
+route.delete('/:id', (req, res) => {
+  cartController.removeItemFromCart(req, res);
 });
 
 module.exports = route;

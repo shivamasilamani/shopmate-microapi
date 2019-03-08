@@ -21,12 +21,7 @@ module.exports = {
       }
     }
   },
-  getItemDetailInCart: async (req, res) => {
-    if (req.user) {
-      res.status(200);
-    }
-  },
-  addProductToCart: async (req, res) => {
+  addItemToCart: async (req, res) => {
     if (req.user) {
       try {
         if (req.body.email) {
@@ -38,6 +33,25 @@ module.exports = {
         await crudUtil.create(cartModel.Shopping_Cart, cartItem);
         res.status(201);
         res.send('Created');
+      } catch (err) {
+        res.status(400);
+        res.send('Bad Request');
+      }
+    }
+  },
+  removeItemFromCart: async (req, res) => {
+    if (req.user) {
+      try {
+        if (!req.params.id) {
+          res.status(400);
+          res.send('Bad Request');
+        }
+        const option = {
+          item_id: req.params.id,
+        };
+        await crudUtil.delete(cartModel.Shopping_Cart, option);
+        res.status(204);
+        res.send('Deleted');
       } catch (err) {
         res.status(400);
         res.send('Bad Request');
