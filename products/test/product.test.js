@@ -13,8 +13,9 @@ const app = require('../index');
 chai.use(chaiHttp);
 chai.should();
 
-describe('user', () => {
+describe('products', () => {
   let token = '';
+  let adminToken = '';
 
   before(async () => {
     await dbConfig.login();
@@ -37,9 +38,19 @@ describe('user', () => {
     const jwtObject = {
       email: 'integration2@test.com',
       name: 'integration',
+      admin: 'user',
     };
 
     token = jwt.sign(jwtObject, config.JWT_SECRET, { expiresIn: '12h' });
+
+    // Generate a valid JWT token for testing
+    const jwtObjectAdmin = {
+      email: 'integration3@test.com',
+      name: 'integration',
+      role: 'admin',
+    };
+
+    adminToken = jwt.sign(jwtObjectAdmin, config.JWT_SECRET, { expiresIn: '12h' });
   });
 
   // All product endpoint test
@@ -106,6 +117,32 @@ describe('user', () => {
         });
     });
 
+    // Test the products API's create feature by using an user WITHOUT admin role
+    // API should return status 401
+    // Product should not be created
+    it('should create a product', (done) => {
+      const reqBody = {
+        product_id: 500001,
+        name: 'test_product',
+        description: 'test product',
+        category_id: 1,
+        department_id: 1,
+        price: 10.10,
+        discounted_price: 10.10,
+        display: 2,
+      };
+
+      chai.request(app)
+        .post('/products/item')
+        .send(reqBody)
+        .set('Authorization', `Bearer ${token}`)
+        .end((err, res) => {
+          res.should.have.status(401);
+          res.body.should.be.a('object');
+          done();
+        });
+    });
+
     // Test the products API's create feature
     // API should return status 201
     // Product should be created with given payload
@@ -124,9 +161,35 @@ describe('user', () => {
       chai.request(app)
         .post('/products/item')
         .send(reqBody)
-        .set('Authorization', `Bearer ${token}`)
+        .set('Authorization', `Bearer ${adminToken}`)
         .end((err, res) => {
           res.should.have.status(201);
+          res.body.should.be.a('object');
+          done();
+        });
+    });
+
+    // Test the products API's create feature by passing an invalid category id
+    // API should return status 400
+    // Product should not be created
+    it('should throw invalid category_id or department_id error', (done) => {
+      const reqBodyInvalid = {
+        product_id: 500002,
+        name: 'test_product',
+        description: 'test product',
+        category_id: 100,
+        department_id: 100,
+        price: 10.10,
+        discounted_price: 10.10,
+        display: 2,
+      };
+
+      chai.request(app)
+        .post('/products/item')
+        .send(reqBodyInvalid)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .end((err, res) => {
+          res.should.have.status(404);
           res.body.should.be.a('object');
           done();
         });
@@ -143,7 +206,7 @@ describe('user', () => {
       chai.request(app)
         .put('/products/item/500000')
         .send(reqBody)
-        .set('Authorization', `Bearer ${token}`)
+        .set('Authorization', `Bearer ${adminToken}`)
         .end((err, res) => {
           res.should.have.status(204);
           res.body.should.be.a('object');

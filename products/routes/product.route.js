@@ -11,19 +11,15 @@ route.get('/:id', (req, res) => {
   productController.getProductDetail(req, res);
 });
 
-route.get('/:id/attributes', (req, res) => {
-  productController.getProductAttributes(req, res);
-});
-
-route.post('/', (req, res) => {
+route.post('/', productController.isAdmin, (req, res) => {
   productController.createProduct(req, res);
 });
 
-route.put('/:id', (req, res) => {
+route.put('/:id', productController.isAdmin, (req, res) => {
   productController.updateProduct(req, res);
 });
 
-route.delete('/:id', (req, res) => {
+route.delete('/:id', productController.isAdmin, (req, res) => {
   productController.deleteProduct(req, res);
 });
 

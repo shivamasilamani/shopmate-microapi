@@ -11,15 +11,15 @@ route.get('/:id', (req, res) => {
   categoryController.getCategoryDetail(req, res);
 });
 
-route.post('/', (req, res) => {
+route.post('/', categoryController.isAdmin, (req, res) => {
   categoryController.createCategory(req, res);
 });
 
-route.put('/:id', (req, res) => {
+route.put('/:id', categoryController.isAdmin, (req, res) => {
   categoryController.updateCategory(req, res);
 });
 
-route.delete('/:id', (req, res) => {
+route.delete('/:id', categoryController.isAdmin, (req, res) => {
   categoryController.deleteCategory(req, res);
 });
 

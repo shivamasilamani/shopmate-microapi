@@ -1,5 +1,6 @@
 const op = require('sequelize').Op;
 const log = require('../config/log.config');
+const msgUtil = require('./message.util');
 
 module.exports = {
   // Queries a DB table to find all records which matches the given condition
@@ -30,13 +31,7 @@ module.exports = {
         })
         .catch((err) => {
           log.error(JSON.stringify(err));
-          const error = {
-            status: 400,
-            error: {
-              message: 'Bad Request',
-            },
-          };
-          reject(error);
+          reject(msgUtil.error_400);
         });
     });
     return getPromise;
@@ -49,24 +44,12 @@ module.exports = {
           if (item) {
             resolve(item);
           } else {
-            const error = {
-              status: 404,
-              error: {
-                message: 'Not Found',
-              },
-            };
-            reject(error);
+            reject(msgUtil.error_400);
           }
         })
         .catch((err) => {
           log.error(JSON.stringify(err));
-          const error = {
-            status: 400,
-            error: {
-              message: 'Bad Request',
-            },
-          };
-          reject(error);
+          reject(msgUtil.error_400);
         });
     });
     return getByIdPromise;
@@ -79,24 +62,12 @@ module.exports = {
           if (item) {
             resolve(item);
           } else {
-            const error = {
-              status: 404,
-              error: {
-                message: 'Not Found',
-              },
-            };
-            reject(error);
+            reject(msgUtil.error_404);
           }
         })
         .catch((err) => {
           log.error(JSON.stringify(err));
-          const error = {
-            status: 400,
-            error: {
-              message: 'Bad Request',
-            },
-          };
-          reject(error);
+          reject(msgUtil.error_400);
         });
     });
     return getByIdPromise;
@@ -110,13 +81,7 @@ module.exports = {
         })
         .catch((err) => {
           log.error(JSON.stringify(err));
-          const error = {
-            status: 400,
-            error: {
-              message: 'Bad Request',
-            },
-          };
-          reject(error);
+          reject(msgUtil.error_400);
         });
     });
     return createPromise;
@@ -130,13 +95,7 @@ module.exports = {
         })
         .catch((err) => {
           log.error(JSON.stringify(err));
-          const error = {
-            status: 400,
-            error: {
-              message: 'Bad Request',
-            },
-          };
-          reject(error);
+          reject(msgUtil.error_400);
         });
     });
     return updatePromise;
@@ -150,13 +109,7 @@ module.exports = {
         })
         .catch((err) => {
           log.error(JSON.stringify(err));
-          const error = {
-            status: 400,
-            error: {
-              message: 'Bad Request',
-            },
-          };
-          reject(error);
+          reject(msgUtil.error_400);
         });
     });
     return destroyPromise;

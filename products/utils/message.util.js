@@ -23,6 +23,12 @@ module.exports = {
       message: 'Bad Request',
     },
   },
+  error_401: {
+    status: 401,
+    data: {
+      message: 'Unauthorized',
+    },
+  },
   error_404: {
     status: 404,
     data: {

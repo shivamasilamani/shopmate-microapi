@@ -29,6 +29,11 @@ const User = sequelizeInstance.define('seq_users', {
   name: {
     type: Sequelize.STRING(100),
   },
+  role: {
+    type: Sequelize.STRING(50),
+    allowNull: false,
+    defaultValue: 'user',
+  },
   credit_card: {
     type: Sequelize.STRING(100),
     validate: {

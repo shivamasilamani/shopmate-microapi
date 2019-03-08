@@ -67,7 +67,7 @@ module.exports = {
           });
       } else {
         res.status(err.status);
-        res.json(err.error);
+        res.json(err.data);
       }
     }
   },
@@ -78,6 +78,7 @@ module.exports = {
       const jwtObject = {
         email: req.user.email,
         name: req.user.name,
+        role: req.user.role,
       };
 
       // Sign JWT token and set it's expiration time to 12 hours
@@ -117,7 +118,7 @@ module.exports = {
         res.json(msgUtil.success_204.data);
       } catch (err) {
         res.status(err.status);
-        res.json(err.error);
+        res.json(err.data);
       }
     }
   },

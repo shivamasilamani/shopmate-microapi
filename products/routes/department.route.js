@@ -11,15 +11,15 @@ route.get('/:id', (req, res) => {
   departmentController.getDepartmentDetail(req, res);
 });
 
-route.post('/', (req, res) => {
+route.post('/', departmentController.isAdmin, (req, res) => {
   departmentController.createDepartment(req, res);
 });
 
-route.put('/:id', (req, res) => {
+route.put('/:id', departmentController.isAdmin, (req, res) => {
   departmentController.updateDepartment(req, res);
 });
 
-route.delete('/:id', (req, res) => {
+route.delete('/:id', departmentController.isAdmin, (req, res) => {
   departmentController.deleteDepartment(req, res);
 });
 

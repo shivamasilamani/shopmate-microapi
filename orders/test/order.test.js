@@ -13,13 +13,13 @@ const app = require('../index');
 chai.use(chaiHttp);
 chai.should();
 
-describe('user', () => {
+describe('orders', () => {
   let token = '';
 
   before(async () => {
     await dbConfig.login();
 
-    // Create a test product for testing
+    // Create a test cart item for testing
     // This will be deleted after the test run
     const payload = {
       item_id: 500000,
@@ -37,9 +37,9 @@ describe('user', () => {
     token = jwt.sign(jwtObject, config.JWT_SECRET, { expiresIn: '12h' });
   });
 
-  // All product endpoint test
+  // All Cart endpoint test
   describe('Shopping Cart /', () => {
-    // Test the products API
+    // Test the cart API
     // API should return status 200
     // API should return at least one result
     it('should read all items in cart', (done) => {
@@ -53,9 +53,9 @@ describe('user', () => {
         });
     });
 
-    // Test the products API's create feature
+    // Test the cart API's create feature
     // API should return status 201
-    // Product should be created with given payload
+    // Item should be added with given payload
     it('should add an item to cart', (done) => {
       const reqBody = {
         product_id: 500001,
@@ -73,9 +73,9 @@ describe('user', () => {
         });
     });
 
-    // Test the products API's create feature
+    // Test the cart API's create feature
     // API should return status 201
-    // Product should be updated with given payload
+    // Item should be removed from the cart
     it('should remove an item from cart', (done) => {
       chai.request(app)
         .delete('/orders/cart/500000')

@@ -20,8 +20,8 @@ if (process.env.NODE_ENV === 'production') {
   options.dialectOptions = {
     socketPath: config.MYSQL_SOCKET_PATH,
   };
-  username = config.MYSQL_USER;
-  password = config.MYSQL_PASSWORD;
+  username = config.MYSQL_GCP_USER;
+  password = config.MYSQL_GCP_PASSWORD;
 } else {
   options.host = config.MYSQL_LOCAL_HOST;
   options.port = config.MYSQL_LOCAL_PORT;

@@ -3,6 +3,14 @@ const crudUtil = require('../utils/crud.util');
 const msgUtil = require('../utils/message.util');
 
 module.exports = {
+  isAdmin: (req, res, next) => {
+    if (req.user && req.user.role === 'admin') {
+      next();
+    } else {
+      res.status(msgUtil.error_401.status);
+      res.json(msgUtil.error_401.data);
+    }
+  },
   getDepartments: async (req, res) => {
     if (req) {
       try {
@@ -14,7 +22,7 @@ module.exports = {
         });
       } catch (err) {
         res.status(err.status);
-        res.json(err.error);
+        res.json(err.data);
       }
     }
   },
@@ -26,7 +34,7 @@ module.exports = {
         res.json({ department });
       } catch (err) {
         res.status(err.status);
-        res.json(err.error);
+        res.json(err.data);
       }
     }
   },
@@ -39,7 +47,7 @@ module.exports = {
         res.send(msgUtil.success_201.data);
       } catch (err) {
         res.status(err.status);
-        res.json(err.error);
+        res.json(err.data);
       }
     }
   },
@@ -58,7 +66,7 @@ module.exports = {
         res.send(msgUtil.success_204.data);
       } catch (err) {
         res.status(err.status);
-        res.json(err.error);
+        res.json(err.data);
       }
     }
   },
@@ -76,7 +84,7 @@ module.exports = {
         res.send(msgUtil.success_204.status);
       } catch (err) {
         res.status(err.status);
-        res.json(err.error);
+        res.json(err.data);
       }
     }
   },
