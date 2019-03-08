@@ -5,19 +5,16 @@ module.exports = {
   // Queries a DB table to find all records which matches the given condition
   getAll: (model, query) => {
     const getPromise = new Promise((resolve, reject) => {
-      const options = {};
+      const options = {
+        where: {},
+      };
       if (query.skip && query.top) {
         options.offset = parseInt(query.skip, 10);
         options.limit = parseInt(query.top, 10);
       }
-      if (query.search) {
-        options.where = {
-          name: {
-            [op.like]: `%${query.search}%`,
-          },
-          description: {
-            [op.like]: `%${query.search}%`,
-          },
+      if (query.email) {
+        options.where.email = {
+          [op.eq]: query.email,
         };
       }
       model.findAndCountAll(options)

@@ -36,7 +36,7 @@ module.exports = {
         const payload = req.body;
         await crudUtil.create(productModel.Department, payload);
         res.status(msgUtil.success_201.status);
-        res.send(msgUtil.success_200.data);
+        res.send(msgUtil.success_201.data);
       } catch (err) {
         res.status(err.status);
         res.json(err.error);

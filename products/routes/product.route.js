@@ -11,6 +11,10 @@ route.get('/:id', (req, res) => {
   productController.getProductDetail(req, res);
 });
 
+route.get('/:id/attributes', (req, res) => {
+  productController.getProductAttributes(req, res);
+});
+
 route.post('/', (req, res) => {
   productController.createProduct(req, res);
 });

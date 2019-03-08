@@ -49,6 +49,14 @@ module.exports = {
     description: {
       type: Sequelize.STRING(1000),
     },
+    category_id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    department_id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
     price: {
       type: Sequelize.DECIMAL(10, 2),
       allowNull: false,
@@ -85,16 +93,6 @@ module.exports = {
           throw new Error('Discounted price is more than actual price');
         }
       },
-    },
-  }),
-  Product_Category: sequelizeInstance.define('seq_product_category', {
-    product_id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true,
-    },
-    category_id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true,
     },
   }),
   Attribute: sequelizeInstance.define('seq_attribute', {

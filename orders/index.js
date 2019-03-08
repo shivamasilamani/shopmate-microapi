@@ -8,6 +8,7 @@ const compression = require('compression');
 const log = require('./config/log.config');
 const dbConfig = require('./config/db.config');
 const cartRoute = require('./routes/cart.route');
+const jobRoute = require('./routes/job.route');
 require('./config/passport.config')(passport);
 
 const app = new Express();
@@ -30,6 +31,7 @@ app.use(compression());
 
 // Setup routes
 app.use('/orders/cart', passport.authenticate('jwt', { session: false }), cartRoute);
+app.use('/orders/job', jobRoute);
 
 app.get('/orders', (req, res) => {
   res.send(`Orders service is running on ${os.cpus().length} CPUs...`);
@@ -54,7 +56,7 @@ app.use((err, req, res) => {
 });
 
 // Start the app
-const port = process.env.PORT || 8001;
+const port = process.env.PORT || 8002;
 app.listen(port, () => {
   log.info('App is running...');
 });

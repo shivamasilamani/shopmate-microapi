@@ -30,10 +30,26 @@ module.exports = {
       }
     }
   },
+  getProductAttributes: async (req, res) => {
+    if (req) {
+      res.status(200);
+    }
+  },
   createProduct: async (req, res) => {
     if (req) {
       try {
         const payload = req.body;
+        const categoryCondition = {
+          category_id: payload.category_id,
+          department_id: payload.department_id,
+        };
+
+        const category = await crudUtil.getOne(productModel.Category, categoryCondition);
+        if (!category) {
+          res.status(msgUtil.error_400.status);
+          res.send(msgUtil.error_400.data);
+          return;
+        }
         await crudUtil.create(productModel.Product, payload);
         res.status(msgUtil.success_201.status);
         res.send(msgUtil.success_201.data);

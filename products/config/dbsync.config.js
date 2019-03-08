@@ -1,23 +1,19 @@
 const dbConfig = require('./db.config');
 const log = require('./log.config');
 const productModel = require('../models/product.model');
-const cartModel = require('../models/cart.model');
 
 dbConfig.login()
   .then(() => {
     log.info('Login Successfull!!');
     log.info('Syncing');
 
-    productModel.Product.sync();
-    productModel.Department.sync();
-    productModel.Category.sync();
-    productModel.Product_Category.sync();
-    productModel.Attribute.sync();
-    productModel.Attribute_Value.sync();
-    productModel.Product_Attribute.sync();
-    productModel.Review.sync();
-
-    cartModel.Shopping_Cart.sync();
+    productModel.Product.sync({ force: true });
+    productModel.Department.sync({ force: true });
+    productModel.Category.sync({ force: true });
+    productModel.Attribute.sync({ force: true });
+    productModel.Attribute_Value.sync({ force: true });
+    productModel.Product_Attribute.sync({ force: true });
+    productModel.Review.sync({ force: true });
   })
   .catch((err) => {
     log.info(err);

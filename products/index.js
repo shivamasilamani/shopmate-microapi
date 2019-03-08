@@ -11,7 +11,6 @@ const productRoute = require('./routes/product.route');
 const departmentRoute = require('./routes/department.route');
 const categoryRoute = require('./routes/category.route');
 const attributeRoute = require('./routes/attribute.route');
-const cartRoute = require('./routes/cart.route');
 require('./config/passport.config')(passport);
 
 const app = new Express();
@@ -37,7 +36,6 @@ app.use('/products/item', passport.authenticate('jwt', { session: false }), prod
 app.use('/products/department', passport.authenticate('jwt', { session: false }), departmentRoute);
 app.use('/products/category', passport.authenticate('jwt', { session: false }), categoryRoute);
 app.use('/products/attribute', passport.authenticate('jwt', { session: false }), attributeRoute);
-app.use('/products/cart', passport.authenticate('jwt', { session: false }), cartRoute);
 
 app.get('/products', (req, res) => {
   res.send(`Products service is running on ${os.cpus().length} CPUs...`);

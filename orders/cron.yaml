@@ -1,0 +1,5 @@
+cron:
+- description: "Clear items in cart which were added two days ago"
+  url: /orders/job/clearcart
+  schedule: every 12 hours
+  target: orders

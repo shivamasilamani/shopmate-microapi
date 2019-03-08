@@ -10,10 +10,6 @@ module.exports = {
       primaryKey: true,
       autoIncrement: true,
     },
-    cart_id: {
-      type: Sequelize.STRING(32),
-      allowNull: false,
-    },
     email: {
       type: Sequelize.STRING(100),
       allowNull: false,
@@ -23,10 +19,6 @@ module.exports = {
     },
     product_id: {
       type: Sequelize.INTEGER,
-      allowNull: false,
-    },
-    attribs: {
-      type: Sequelize.STRING(1000),
       allowNull: false,
     },
     quantity: {

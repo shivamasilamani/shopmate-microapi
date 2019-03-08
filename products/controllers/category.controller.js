@@ -34,6 +34,18 @@ module.exports = {
     if (req) {
       try {
         const payload = req.body;
+
+        const departmentCondition = {
+          department_id: req.body.department_id,
+        };
+
+        const department = await crudUtil.getOne(productModel.Department, departmentCondition);
+        if (!department) {
+          res.status(msgUtil.error_400.status);
+          res.send(msgUtil.error_400.data);
+          return;
+        }
+
         await crudUtil.create(productModel.Category, payload);
         res.status(msgUtil.success_201.status);
         res.json(msgUtil.success_201.data);

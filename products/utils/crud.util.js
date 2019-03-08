@@ -1,17 +1,31 @@
 const Sequelize = require('sequelize');
 const log = require('../config/log.config');
 
+const op = Sequelize.Op;
+
 module.exports = {
   // Queries a DB table to find all records which matches the given condition
   getAll: (model, query) => {
     const getPromise = new Promise((resolve, reject) => {
-      const options = {};
+      const options = {
+        where: {},
+      };
       if (query.skip && query.top) {
         options.offset = parseInt(query.skip, 10);
         options.limit = parseInt(query.top, 10);
       }
       if (query.search) {
         options.where = Sequelize.literal(`MATCH (name, description) AGAINST(${query.search} IN NATURAL LANGUAGE MODE)`);
+      }
+      if (query.category) {
+        options.where.category_id = {
+          [op.eq]: query.category,
+        };
+      }
+      if (query.department) {
+        options.where.department_id = {
+          [op.eq]: query.department,
+        };
       }
       model.findAndCountAll(options)
         .then((items) => {
