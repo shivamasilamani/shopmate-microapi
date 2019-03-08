@@ -33,7 +33,7 @@ app.use(log.requestLogger);
 app.use(compression());
 
 // Setup routes
-app.use('/products/items', passport.authenticate('jwt', { session: false }), productRoute);
+app.use('/products/item', passport.authenticate('jwt', { session: false }), productRoute);
 app.use('/products/department', passport.authenticate('jwt', { session: false }), departmentRoute);
 app.use('/products/category', passport.authenticate('jwt', { session: false }), categoryRoute);
 app.use('/products/attribute', passport.authenticate('jwt', { session: false }), attributeRoute);

@@ -1,4 +1,4 @@
-const op = require('sequelize').Op;
+const Sequelize = require('sequelize');
 const log = require('../config/log.config');
 
 module.exports = {
@@ -11,14 +11,7 @@ module.exports = {
         options.limit = parseInt(query.top, 10);
       }
       if (query.search) {
-        options.where = {
-          name: {
-            [op.like]: `%${query.search}%`,
-          },
-          description: {
-            [op.like]: `%${query.search}%`,
-          },
-        };
+        options.where = Sequelize.literal(`MATCH (name, description) AGAINST(${query.search} IN NATURAL LANGUAGE MODE)`);
       }
       model.findAndCountAll(options)
         .then((items) => {

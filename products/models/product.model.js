@@ -79,6 +79,13 @@ module.exports = {
         fields: ['name', 'description'],
       },
     ],
+    validate: {
+      discountedPriceisSmaller() {
+        if (this.discounted_price > this.price) {
+          throw new Error('Discounted price is more than actual price');
+        }
+      },
+    },
   }),
   Product_Category: sequelizeInstance.define('seq_product_category', {
     product_id: {
