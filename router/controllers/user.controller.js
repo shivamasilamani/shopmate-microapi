@@ -10,8 +10,8 @@ module.exports = {
     if (req.isAuthenticated()) {
       next();
     } else {
-      res.status(401);
-      res.send('Unauthorized');
+      res.status(msgUtil.error_401.status);
+      res.json(msgUtil.error_401.data);
     }
   },
   signup: async (req, res) => {
@@ -19,6 +19,7 @@ module.exports = {
       // Email and Password is mandatory for user registration
       if (!req.body.email || !req.body.password) {
         res.status(msgUtil.error_400.status);
+        msgUtil.error_400.data.long_text = 'Email or Password id empty';
         res.json(msgUtil.error_400.data);
         log.error('Email or Password is empty!');
         return;
@@ -27,8 +28,18 @@ module.exports = {
       // Minimum password length should be more than 5 characters
       if (req.body.password.length < 5) {
         res.status(msgUtil.error_400.status);
+        msgUtil.error_400.data.long_text = 'Password length is less than 5';
         res.json(msgUtil.error_400.data);
         log.error('Password length is less than 5');
+        return;
+      }
+
+      // Password should be of type string
+      if (typeof req.body.password !== 'string') {
+        res.status(msgUtil.error_400.status);
+        msgUtil.error_400.data.long_text = 'Password should be a string';
+        res.json(msgUtil.error_400.data);
+        log.error('PPassword should be a string');
         return;
       }
 
@@ -37,6 +48,7 @@ module.exports = {
       const user = await crudUtil.getOne(userModel.User, option);
       if (user) {
         res.status(msgUtil.error_409.status);
+        msgUtil.error_409.data.long_text = 'User already registered';
         res.json(msgUtil.error_409.data);
         log.error('User already exists');
         return;
@@ -57,17 +69,17 @@ module.exports = {
             res.status(msgUtil.error_400.status);
 
             // If there is any error from sequelize show it otherwise log a generic error
-            if (err) {
-              res.json({ data: error });
+            if (error) {
+              res.json(msgUtil.error_400.data);
               log.error('Some error from sequelize while creating user');
             } else {
               res.json(msgUtil.error_400.data);
-              log.error(JSON.stringify(msgUtil.error_400.data));
+              log.error('Some error from sequelize while creating user');
             }
           });
       } else {
-        res.status(err.status);
-        res.json(err.data);
+        res.status(msgUtil.error_500.status);
+        res.json(msgUtil.error_500.data);
       }
     }
   },
@@ -91,7 +103,8 @@ module.exports = {
       });
     } else {
       res.status(msgUtil.error_400.status);
-      res.send(msgUtil.error_400.data);
+      msgUtil.error_400.data.long_text = 'Not able to retrieve user data';
+      res.json(msgUtil.error_400.data);
       log.error('Login failed! Not able to retrieve user data');
     }
   },
@@ -103,6 +116,7 @@ module.exports = {
         // Email, Hash and Salt should not be updated. If req object has these data, throw error
         if (req.body.email || req.body.hash || req.body.salt) {
           res.status(msgUtil.error_400.status);
+          msgUtil.error_400.data.long_text = 'Credentials cannot be updated';
           res.json(msgUtil.error_400.data);
           log.error('Cannot update email and password');
           return;
@@ -117,8 +131,13 @@ module.exports = {
         res.status(msgUtil.success_204.status);
         res.json(msgUtil.success_204.data);
       } catch (err) {
-        res.status(err.status);
-        res.json(err.data);
+        if (err.status) {
+          res.status(err.status);
+          res.json(err.data);
+        } else {
+          res.status(msgUtil.error_500.status);
+          res.json(msgUtil.error_500.data);
+        }
       }
     }
   },

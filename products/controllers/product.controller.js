@@ -15,14 +15,22 @@ module.exports = {
     if (req) {
       try {
         const products = await crudUtil.getAll(productModel.Product, req.query);
+        res.set({
+          'cache-Control': 'public, max-age=43200000',
+        });
         res.status(msgUtil.success_200.status);
         res.json({
           products: products.rows,
           count: products.count,
         });
       } catch (err) {
-        res.status(err.status);
-        res.json(err.data);
+        if (err.status) {
+          res.status(err.status);
+          res.json(err.data);
+        } else {
+          res.status(msgUtil.error_500.status);
+          res.json(msgUtil.error_500.data);
+        }
       }
     }
   },
@@ -33,8 +41,13 @@ module.exports = {
         res.status(msgUtil.success_200.status);
         res.json({ product });
       } catch (err) {
-        res.status(err.status);
-        res.json(err.data);
+        if (err.status) {
+          res.status(err.status);
+          res.json(err.data);
+        } else {
+          res.status(msgUtil.error_500.status);
+          res.json(msgUtil.error_500.data);
+        }
       }
     }
   },
@@ -55,15 +68,20 @@ module.exports = {
         const category = await crudUtil.getOne(productModel.Category, categoryCondition);
         if (!category) {
           res.status(msgUtil.error_400.status);
-          res.send(msgUtil.error_400.data);
+          res.json(msgUtil.error_400.data);
           return;
         }
         await crudUtil.create(productModel.Product, payload);
         res.status(msgUtil.success_201.status);
-        res.send(msgUtil.success_201.data);
+        res.json(msgUtil.success_201.data);
       } catch (err) {
-        res.status(err.status);
-        res.json(err.data);
+        if (err.status) {
+          res.status(err.status);
+          res.json(err.data);
+        } else {
+          res.status(msgUtil.error_500.status);
+          res.json(msgUtil.error_500.data);
+        }
       }
     }
   },
@@ -79,10 +97,15 @@ module.exports = {
         };
         await crudUtil.update(productModel.Product, payload, whereOption);
         res.status(msgUtil.success_204.status);
-        res.send(msgUtil.success_204.data);
+        res.json(msgUtil.success_204.data);
       } catch (err) {
-        res.status(err.status);
-        res.json(err.data);
+        if (err.status) {
+          res.status(err.status);
+          res.json(err.data);
+        } else {
+          res.status(msgUtil.error_500.status);
+          res.json(msgUtil.error_500.data);
+        }
       }
     }
   },
@@ -97,10 +120,15 @@ module.exports = {
         };
         await crudUtil.delete(productModel.Product, whereOption);
         res.status(msgUtil.success_204.status);
-        res.send(msgUtil.success_204.status);
+        res.json(msgUtil.success_204.status);
       } catch (err) {
-        res.status(err.status);
-        res.json(err.data);
+        if (err.status) {
+          res.status(err.status);
+          res.json(err.data);
+        } else {
+          res.status(msgUtil.error_500.status);
+          res.json(msgUtil.error_500.data);
+        }
       }
     }
   },

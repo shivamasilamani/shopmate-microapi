@@ -5,6 +5,8 @@ const googleTraceAgent = require('@google-cloud/trace-agent');
 const googleDebugAgent = require('@google-cloud/debug-agent');
 const passport = require('passport');
 const compression = require('compression');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const log = require('./config/log.config');
 const dbConfig = require('./config/db.config');
 const cartRoute = require('./routes/cart.route');
@@ -15,6 +17,19 @@ const app = new Express();
 
 // Login to database and establish connection
 dbConfig.login();
+
+// Set various http headers which enhances security
+app.use(helmet());
+
+// Set request limit for a single client
+// In 15 mins, if a single client sends more than 500 requests, block the subsequent requests
+if (process.env.NODE_ENV === 'production') {
+  const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 500,
+  });
+  app.use(limiter);
+}
 
 // Initialize passport
 app.use(passport.initialize());

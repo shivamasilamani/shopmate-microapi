@@ -4,7 +4,7 @@ Set of microservices which exposes ShopMate backend.
 
 # Architecture
 
-Features are divided and grouped into three microservices
+Features are splitted and grouped into three microservices
 	**Router** || **Products** || **Orders**
 
 ![](http://i66.tinypic.com/6h4vio.png)
@@ -36,23 +36,40 @@ This handles all cart and order related features like,
 
 # Error Handling
 
-API 
+API end-points returns appropriate HTTP status codes wherever possible. A detailed list of errors of every end-point is documented under API reference.
 
 ### Logs
 
-You can open a file from **Google Drive**, **Dropbox** or **GitHub** by opening the **Synchronize** sub-menu and clicking **Open from**. Once opened in the workspace, any modification in the file will be automatically synced.
+Winston logger is used to log all possible information for error tracking and debugging. Google cloud platform also supports winston logger. With this services generates logs in the production mode.
 
 ### HTTP Errors
 
-You can save any file of the workspace to **Google Drive**, **Dropbox** or **GitHub** by opening the **Synchronize** sub-menu and clicking **Save on**. Even if a file in the workspace is already synced, you can save it to another location. StackEdit can sync one file with multiple locations and accounts.
+All API end-points returns appropriate HTTP error code. A detailed list of error codes and error messages are documented under API reference.
 
 # Security
 
+### Authentication
 Authentication is handled using JWT tokens. 'Login' API authenticates the user using email and password and genrates a JWT token which is valid for 12 hours and sends it to client. Client has to send this token in all subsequent requests in request header. As there are no session data maintained in the server, this token acts as a single source of truth to identify the user associated with a request.  Also there are many microservices in the backend which interacts with each other, its impossible to use session based authentiction without a proper session store.
+
+### Authorization
+Authorization is handled using roles. Every user gets a role. By default role '*user*' has been assigned to every user. There is no interface available as of now to change the role from *user* to *admin*. To get an user *admin* user, login to database with root access and change the user role.
+
+### DOS
+Simple express dos middleware is implemented to prevent DOS attacks. However google app engine firewall has in-built support for this already. In production this has been taken care already.
 
 # Performance
 
-StackEdit extends the standard Markdown syntax by adding extra **Markdown extensions**, providing you with some nice features.
+Performance is handled with multiple aspects.
+
+### Compression
+
+gzip compression is used to compress all response data. This reduces the size of response payload and enhances response time.
+
+### Pagination
+Pagination also helps to enhance performance. With pagination support data can be queried in chunks instead of everything in a single request.
+
+### Caching
+In-Memory response caching has been enabled to cache the response payload. This reduces the reliance on database to get data on every request. In-Memory is not production ready however this is just a proof of concept. Using the same concept caching can be scaled by introducing proper caching tools like memcached or redis.
 
 
 # Tests
@@ -125,6 +142,8 @@ Other Error
 **500 Server Error**
 
 ### Login
+
+Before calling any API end-point, this API is used to generate login token. This token should be sent with all subsequent requests.
 
 ```sh
 Request HTTP Headers

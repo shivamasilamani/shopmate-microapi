@@ -3,6 +3,7 @@ const cartModel = require('../models/cart.model');
 const crudUtil = require('../utils/crud.util');
 const msgUtil = require('../utils/message.util');
 const dbConfig = require('../config/db.config');
+const log = require('../config/log.config');
 
 module.exports = {
   clearCart: async (req, res) => {
@@ -15,10 +16,12 @@ module.exports = {
       };
       await crudUtil.delete(cartModel.Shopping_Cart, option);
       res.status(msgUtil.success_204.status);
-      res.send(msgUtil.success_204.data);
+      res.json(msgUtil.success_204.data);
     } catch (err) {
       res.status(msgUtil.error_500.status);
-      res.send(msgUtil.error_500.data);
+      res.json(msgUtil.error_500.data);
+      log.error('Unexpected Error');
+      log.error(JSON.stringify(err));
     }
   },
 };

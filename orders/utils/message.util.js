@@ -6,7 +6,7 @@ module.exports = {
     },
   },
   success_201: {
-    status: 200,
+    status: 201,
     data: {
       message: 'Created',
     },
