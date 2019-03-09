@@ -75,6 +75,17 @@ In-Memory response caching has been enabled only for */products/item* end-point 
 ### Infrastructure
 As the features are splitted into multiple services which are running individually, backend is already equipped to be scalled easily. Right now services are deployed to single instance running in a data center in us-west region. It is easier to add more instances into different regions to support traffic from different geographic regions.
 
+### Load Testing Results
+
+*Test Environment
+	No of CPU Core - 1
+	No of concurrent connections - 150
+	No of requests per second - 270*
+
+With single core CPU, and a http based DB connection, API is able to handle 270 requests per second without any error. This would improve significantly if the API is tuned to run on multi core.
+
+![](http://i68.tinypic.com/dox.jpg)
+
 # Cron Job
 A background job has been implemented to clear items from cart which are added 48 hours ago. This job is also deployed to google app engine and scheduled to run every 12 hours.
 
@@ -786,7 +797,7 @@ Request Type
 POST
 
 REST End-Point
-https://shopmate-microapi.appspot.com/cart/{item_id}
+https://shopmate-microapi.appspot.com/orders/cart/{item_id}
 ```
 #### Success
 On success, API returns HTTP status code **204 Deleted**.
