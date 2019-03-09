@@ -1,17 +1,18 @@
 # ShopMate API
 
-Set of microservices which exposes ShopMate backend.
+Set of microservices which exposes ShopMate backend. All services are hosted on Google App Engine.
 
 # Architecture
 
 Features are splitted and grouped into three microservices
-	**Router** || **Products** || **Orders**
+	
+**Router** || **Products** || **Orders**
 
 ![](http://i66.tinypic.com/6h4vio.png)
 
 ### Router
 
-This service acts as the entry point for all other services. It takes care of user management and dispatching calls to other services
+Router service acts as the entry point for other services. It takes care of user management and dispatching calls to other services
 
 ### Products
 
@@ -36,11 +37,9 @@ This handles all cart and order related features like,
 
 # Error Handling
 
-API end-points returns appropriate HTTP status codes wherever possible. A detailed list of errors of every end-point is documented under API reference.
-
 ### Logs
 
-Winston logger is used to log all possible information for error tracking and debugging. Google cloud platform also supports winston logger. With this services generates logs in the production mode.
+Winston logger is used to log all possible information for error tracking and debugging. Google cloud platform also supports winston logger. Services logs all http requests and DB operations asynchronously in production mode.
 
 ### HTTP Errors
 
@@ -49,13 +48,15 @@ All API end-points returns appropriate HTTP error code. A detailed list of error
 # Security
 
 ### Authentication
-Authentication is handled using JWT tokens. 'Login' API authenticates the user using email and password and genrates a JWT token which is valid for 12 hours and sends it to client. Client has to send this token in all subsequent requests in request header. As there are no session data maintained in the server, this token acts as a single source of truth to identify the user associated with a request.  Also there are many microservices in the backend which interacts with each other, its impossible to use session based authentiction without a proper session store.
+Authentication is handled using JWT tokens. 'Login' API authenticates the user using email and password and genrates a JWT token which is valid for 12 hours, then sends it to client. Client has to send this token in all subsequent requests in request header. As there are no session data maintained in the server, this token acts as a single source of truth to identify the user associated with a request.  Also there are many microservices in the backend which interacts with each other, JWT token comes in handy in this scenario. 
+
+> Invalidating JWT tokens are not implemented yet.
 
 ### Authorization
-Authorization is handled using roles. Every user gets a role. By default role '*user*' has been assigned to every user. There is no interface available as of now to change the role from *user* to *admin*. To get an user *admin* user, login to database with root access and change the user role.
+Authorization is handled using roles. Every user gets a role. By default role '*user*' has been assigned to every user. There is no interface available as of now to change the role from *user* to *admin*. To get an user *admin* authorization, login to database with root access and change the role.
 
 ### DOS
-Simple express dos middleware is implemented to prevent DOS attacks. However google app engine firewall has in-built support for this already. In production this has been taken care already.
+Simple express request rate limit middleware is implemented to prevent DOS attacks. However google app engine firewall has in-built support for this already. In production this has been taken care already.
 
 # Performance
 
@@ -66,10 +67,13 @@ Performance is handled with multiple aspects.
 gzip compression is used to compress all response data. This reduces the size of response payload and enhances response time.
 
 ### Pagination
-Pagination also helps to enhance performance. With pagination support data can be queried in chunks instead of everything in a single request.
+Pagination also helps to enhance performance. With pagination support, data can be queried in chunks instead of everything in a single request.
 
 ### Caching
-In-Memory response caching has been enabled to cache the response payload. This reduces the reliance on database to get data on every request. In-Memory is not production ready however this is just a proof of concept. Using the same concept caching can be scaled by introducing proper caching tools like memcached or redis.
+In-Memory response caching has been enabled only for */products/item* end-point to cache response payload. This reduces reliance on database to get data on every request. In-Memory is not production ready however this is just a proof of concept. Using the same concept caching can be scaled by introducing proper caching tools like memcached or redis.
+
+### Infrastructure
+As the features are splitted into multiple services which are running individually, backend is already equipped to be scalled easily. Right now services are deployed to single instance running in a data center in us-west region. It is easier to add more instances into different regions to support traffic from different geographic regions.
 
 # Cron Job
 A background job has been implemented to clear items from cart which are added 48 hours ago. This job is also deployed to google app engine and scheduled to run every 12 hours.
@@ -85,7 +89,7 @@ npm test
 
 # Deployment
 
-All services are deployed to Google app engine and database is running in Google Cloud SQL service which is also part of Google Cloud Platform. There is also a cron job which is scheduled to run every 12 hours to clear inactive shopping carts.
+All services are deployed to Google App Engine and database is running on Google Cloud SQL service which is also part of Google Cloud Platform. There is also a cron job which is scheduled to run every 12 hours to clear inactive shopping carts.
 
 ![](http://i65.tinypic.com/2jd1jk4.png)
 
@@ -145,7 +149,7 @@ Other Error
 
 ### Login
 
-Before calling any API end-point, this API is used to generate login token. This token should be sent with all subsequent requests.
+Before calling any API end-point, this API shall be used to generate login token. This token shall be sent with all subsequent requests.
 
 ```sh
 Request HTTP Headers
