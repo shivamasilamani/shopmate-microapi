@@ -4,8 +4,10 @@ Set of microservices which exposes ShopMate backend.
 
 # Architecture
 
-Features are divided into three microservices
+Features are divided and grouped into three microservices
 	**Router** || **Products** || **Orders**
+
+![](http://i66.tinypic.com/6h4vio.png)
 
 ### Router
 
@@ -44,29 +46,47 @@ You can open a file from **Google Drive**, **Dropbox** or **GitHub** by opening 
 
 You can save any file of the workspace to **Google Drive**, **Dropbox** or **GitHub** by opening the **Synchronize** sub-menu and clicking **Save on**. Even if a file in the workspace is already synced, you can save it to another location. StackEdit can sync one file with multiple locations and accounts.
 
-# Secuirty
+# Security
 
-Publishing in StackEdit makes it simple for you to publish online your files. Once you're happy with a file, you can publish it to different hosting platforms like **Blogger**, **Dropbox**, **Gist**, **GitHub**, **Google Drive**, **WordPress** and **Zendesk**. With [Handlebars templates](http://handlebarsjs.com/), you have full control over what you export.
-
-> Tip
+Authentication is handled using JWT tokens. 'Login' API authenticates the user using email and password and genrates a JWT token which is valid for 12 hours and sends it to client. Client has to send this token in all subsequent requests in request header. As there are no session data maintained in the server, this token acts as a single source of truth to identify the user associated with a request.  Also there are many microservices in the backend which interacts with each other, its impossible to use session based authentiction without a proper session store.
 
 # Performance
 
 StackEdit extends the standard Markdown syntax by adding extra **Markdown extensions**, providing you with some nice features.
 
-> Tip
 
 # Tests
 
-StackEdit extends the standard Markdown syntax by adding extra **Markdown extensions**, providing you with some nice features.
+API tests are written using mocha and chai. All microservices are equipped with automated tests. As mocha integrates well with tools like Jenkins, it is easy to scale it and add the tests as part of build process in a CI-CD pipeline.
 
-> Tip
+To run tests locally. Run the following cmd inside a service folder
+```sh
+npm test
+```
 
 # Deployment
 
-StackEdit extends the standard Markdown syntax by adding extra **Markdown extensions**, providing you with some nice features.
+All services are deployed to Google app engine and database is running in Google Cloud SQL service which is also part of Google Cloud Platform. There is also a cron job which is scheduled to run every 12 hours to clear inactive shopping carts.
 
-> Tip
+![](http://i65.tinypic.com/2jd1jk4.png)
+
+# Local Setup
+
+To setup the services locally, clone the repository and do the following
+
+1. Open every service folder and run the following cmd
+```sh
+npm install
+```
+2. Install MySQL in local machine.
+3. Create three databases. *users*, *products*, *orders*.
+4. Open every service folder and change the properties inside config.json file.
+5. Open every service folder and run the following cmd
+
+```sh
+node config/dbsync.config.js
+```
+> Sequelize ORM is used in services to interact with database. Running dbsync.config.js would take the sequelize models and create tables in database.
 
 # API Reference
 
@@ -589,5 +609,94 @@ Invalid Credentials
 **401 Unauthorized**
 Invalid Product ID
 **404 Not Found**
+Other Error 
+**500 Server Error**
+
+## Orders Service
+
+Orders service handles all things related to shopping cart and orders
+
+### Add To Cart
+
+```sh
+Request HTTP Headers
+"Content-Type: application/json"
+
+Request Body
+{
+	"product_id": 1
+	"quantity": 2
+}
+
+Request Type
+POST
+
+REST End-Point
+https://shopmate-microapi.appspot.com/orders/cart
+```
+#### Success
+On success, API returns HTTP status code **201 Created**.
+
+#### Error
+API returns appropriate HTTP error code if there is any error.
+
+Invalid Credentials
+**401 Unauthorized**
+Other Error 
+**500 Server Error**
+
+### Get Items in Cart
+
+```sh
+Request HTTP Headers
+"Content-Type: application/json"
+
+Request Type
+GET
+
+REST End-Point
+https://shopmate-microapi.appspot.com/orders/cart
+
+Response Data
+{
+	"item_id": 1,
+	"product_id": 1,
+	"quantity": 2,
+	"buy_now": true
+}
+```
+#### Success
+On success, API returns HTTP status code **200 OK**.
+
+#### Error
+API returns appropriate HTTP error code if there is any error.
+
+Invalid Credentials
+**401 Unauthorized**
+Other Error 
+**500 Server Error**
+
+### Remove Items from Cart
+```sh
+Request HTTP Headers
+"Content-Type: application/json"
+"Authorization: Bearer token"
+
+Request Type
+POST
+
+REST End-Point
+https://shopmate-microapi.appspot.com/cart/{item_id}
+```
+#### Success
+On success, API returns HTTP status code **204 Deleted**.
+
+#### Error
+API returns appropriate HTTP error code if there is any error.
+
+Invalid Cart Item ID
+**404 Not Found**
+Invalid Credentials
+**401 Unauthorized**
 Other Error 
 **500 Server Error**
