@@ -3,7 +3,7 @@ const productController = require('../controllers/product.controller');
 
 const route = express.Router();
 
-route.get('/', (req, res) => {
+route.get('/', productController.getFromcache, (req, res) => {
   productController.getProducts(req, res);
 });
 

@@ -71,6 +71,8 @@ Pagination also helps to enhance performance. With pagination support data can b
 ### Caching
 In-Memory response caching has been enabled to cache the response payload. This reduces the reliance on database to get data on every request. In-Memory is not production ready however this is just a proof of concept. Using the same concept caching can be scaled by introducing proper caching tools like memcached or redis.
 
+# Cron Job
+A background job has been implemented to clear items from cart which are added 48 hours ago. This job is also deployed to google app engine and scheduled to run every 12 hours.
 
 # Tests
 
@@ -441,6 +443,44 @@ Invalid Product ID
 Other Error 
 **500 Server Error**
 
+### Get all categories
+
+```sh
+Request HTTP Headers
+"Content-Type: application/json"
+"Authorization: Bearer token"
+
+Request Type
+GET
+
+REST End-Point
+https://shopmate-microapi.appspot.com/products/category
+
+Response Data
+{
+	"categories": [{
+			"category_id": 1,
+            "department_id": 1,
+            "name": "category",
+            "description": "category",
+            "createdAt": "2019-03-08T06:39:28.000Z",
+            "updatedAt": "2019-03-08T06:39:28.000Z"
+	}],
+	"count": 1
+}
+```
+#### Success
+On success, API returns HTTP status code **200 OK**.
+Response payload contains list of categories and count of categories.
+
+#### Error
+API returns appropriate HTTP error code if there is any error.
+
+Invalid Credentials
+**401 Unauthorized**
+Other Error 
+**500 Server Error**
+
 ### Create Category
 
 **Admin** credentials are required to call this API. To get admin credntials an user should be created with the role '**admin**'
@@ -534,6 +574,43 @@ Invalid Credentials
 **401 Unauthorized**
 Invalid Product ID
 **404 Not Found**
+Other Error 
+**500 Server Error**
+
+### Get all departments
+
+```sh
+Request HTTP Headers
+"Content-Type: application/json"
+"Authorization: Bearer token"
+
+Request Type
+GET
+
+REST End-Point
+https://shopmate-microapi.appspot.com/products/department
+
+Response Data
+{
+	"departments": [{
+			"department_id": 1,
+            "name": "department",
+            "description": "department",
+            "createdAt": "2019-03-08T06:39:28.000Z",
+            "updatedAt": "2019-03-08T06:39:28.000Z"
+	}],
+	"count": 1
+}
+```
+#### Success
+On success, API returns HTTP status code **200 OK**.
+Response payload contains list of departments and count of departments.
+
+#### Error
+API returns appropriate HTTP error code if there is any error.
+
+Invalid Credentials
+**401 Unauthorized**
 Other Error 
 **500 Server Error**
 

@@ -1,4 +1,5 @@
 const productModel = require('../models/product.model');
+const cacheConfig = require('../config/cache.config');
 const crudUtil = require('../utils/crud.util');
 const msgUtil = require('../utils/message.util');
 
@@ -11,6 +12,20 @@ module.exports = {
       res.json(msgUtil.error_401.data);
     }
   },
+  getFromcache: (req, res, next) => {
+    if (cacheConfig.isExistInCache(req.url)) {
+      const payload = cacheConfig.getFromCache(req.url);
+      if (payload) {
+        res.status(msgUtil.success_200.status);
+        res.json(payload);
+        cacheConfig.clearCache();
+        return;
+      }
+      next();
+    } else {
+      next();
+    }
+  },
   getProducts: async (req, res) => {
     if (req) {
       try {
@@ -19,10 +34,12 @@ module.exports = {
           'cache-Control': 'public, max-age=43200000',
         });
         res.status(msgUtil.success_200.status);
-        res.json({
+        const payload = {
           products: products.rows,
           count: products.count,
-        });
+        };
+        res.json(payload);
+        cacheConfig.addToCache(req.url, payload);
       } catch (err) {
         if (err.status) {
           res.status(err.status);
